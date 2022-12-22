@@ -28,3 +28,36 @@ form{
     display:flex;
     justify-content: center;
 }
+
+@media only screen 
+    and (device-width: 375px) 
+    and (device-height: 812px) 
+    and (-webkit-device-pixel-ratio: 3) { 
+        
+    body{
+        width:100%;
+    }
+
+    #title{
+        font-size: 100px;
+    }
+
+    form{
+        display: inline;
+        justify-content:flex-start;
+    }
+
+    input{
+        height: 70px;
+        font-size: 40px;
+    }
+
+    #input_image{
+        width:100%;
+    }
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    height: 70px;
+    font-size: 30px;
+}
