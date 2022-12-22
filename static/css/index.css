@@ -7,7 +7,7 @@ body{
     width:100%;
     text-align: center;
     font-size: 50px;
-    padding:20px;
+    padding:10px;
     margin:0;
 }
 
@@ -18,15 +18,37 @@ body{
     margin-right:auto;
 }
 
-#input_image{
-    display: block;
-    margin:auto;
-    max-height: 60%;
-}
-
 form{
     display:flex;
     justify-content: center;
+}
+
+#imgs{
+    display:flex;
+    justify-content: center;
+    width:100%;
+}
+
+.user_img{
+    max-width: 40%;
+    float:left;
+    position: relative;
+    margin: 10px;
+}
+
+img{
+    width:100%;
+}
+
+#loading_img{
+    width:70px;
+    height: 70px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left:0;
+    right: 0;
+    margin: auto;
 }
 
 @media only screen 
@@ -52,9 +74,15 @@ form{
         font-size: 40px;
     }
 
-    #input_image{
-        width:100%;
-        max-height: none;
+    #imgs{
+        display:inline;
+        justify-content: flex-start;
+    }
+
+    .user_img{
+        max-width: 100%;
+        float:inline-start;
+        margin:10px;
     }
 
     input[type="file"]::-webkit-file-upload-button {
