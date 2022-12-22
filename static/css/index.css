@@ -54,6 +54,7 @@ form{
 
     #input_image{
         width:100%;
+        max-height: none;
     }
 }
 
