@@ -13,6 +13,7 @@ import subprocess
 from flask import Flask, render_template
 from flask import request, jsonify, send_file
 from flask_socketio import SocketIO, emit
+from threading import Thread, Lock
 
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -23,6 +24,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 socketio = SocketIO()
 socketio.init_app(app, cors_allowed_origins='*')
 name_space = '/dcenter'
+
+lock = Lock()
+
+gpu_flags = [0] * 5
 
 def popen_and_call(on_exit, exit_args, on_err, err_args, popen_args):
     def run_in_thread(on_exit, exit_args, on_err, err_args, popen_args):
@@ -67,17 +72,34 @@ def upload():
     path = UPLOAD_FOLDER + "/" + img_name + "_" + uid + img_type
     print("path=",path)
     file.save(path)
-    cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu --img_path=" + path + " --max_pixel_len=170 --phase_size=4 --SAVE_ROOT=./static/outputs/" + img_name + "_" + uid + "_"
+    gpu_id = -1
+    lock.acquire()
+    for i, flag in enumerate(gpu_flags):
+        if flag == 0:
+            gpu_flags[i] = 1
+            gpu_id = i
+            break
+    lock.release()
+    if gpu_id == -1:
+        print("busy", uid)
+        return "403"
+    cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu --img_path=" + path + " --max_pixel_len=170 --phase_size=4 --gpu_id=" + str(gpu_id) + " --SAVE_ROOT=./static/outputs/" + img_name + "_" + uid + "_"
     print(f"run shell on thread={threading.current_thread()}")
     with open("./std/stdout_" + uid + ".txt","wb") as out, open("./std/stderr_" + uid + ".txt","wb") as err:
         proc = subprocess.Popen(cmd,stdout=out,stderr=err,shell=True)
         proc.wait()
+        lock.acquire()
+        gpu_flags[gpu_id] = 0
+        lock.release()
         returncode = proc.returncode
         print(f"run shell over, returncode={returncode}")
         if returncode == 0:
             return "200"
         else:
             return "503"
+    lock.acquire()
+    gpu_flags[gpu_id] = 0
+    lock.release()
     return "500"
 
 @app.route('/download', methods=['POST'])

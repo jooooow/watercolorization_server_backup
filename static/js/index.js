@@ -33,6 +33,11 @@ $(document).ready(function() {
             alert('choose one file!');
             return;
         }
+
+        $('#output_img_div').empty();
+        $('#output_img_div').append('<img id="loading_img">');
+        $('#output_img_div').width($('#input_img_div').width());
+        $('#loading_img').attr('src', '/static/img/loading.gif');
         
         var formData = new FormData($('#submit_form')[0]);
         var uid = guid();
@@ -52,6 +57,7 @@ $(document).ready(function() {
             cache: false,
             processData: false,
             success: function (data) {
+                console.log(data)
                 if(data == 200){
                     $('#output_img_div').empty();
                     $('#output_img_div').append('<img id="output_img">');
@@ -62,10 +68,7 @@ $(document).ready(function() {
                 }
             }
         });
-        $('#output_img_div').empty();
-        $('#output_img_div').append('<img id="loading_img">');
-        $('#output_img_div').width($('#input_img_div').width());
-        $('#loading_img').attr('src', '/static/img/loading.gif');
+        
 
         return false;
     })
