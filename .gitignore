@@ -1,3 +1,5 @@
-uploads/
-outputs/
-std/
+/uploads/
+/static/outputs
+/std
+**/ttt/*
+!**/ttt/t.py
