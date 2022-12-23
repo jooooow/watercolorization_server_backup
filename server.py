@@ -23,13 +23,17 @@ socketio = SocketIO()
 socketio.init_app(app, cors_allowed_origins='*')
 name_space = '/dcenter'
 
-def popen_and_call(on_exit, exit_args, popen_args):
-    def run_in_thread(on_exit, exit_args, popen_args):
+def popen_and_call(on_exit, exit_args, on_err, err_args, popen_args):
+    def run_in_thread(on_exit, exit_args, on_err, err_args, popen_args):
         proc = subprocess.Popen(*popen_args, shell=True)
         proc.wait()
-        on_exit(*exit_args)
+        returncode = proc.returncode
+        if returncode == 0:
+            on_exit(*exit_args)
+        else:
+            on_err(*err_args)
         return
-    thread = threading.Thread(target=run_in_thread, args=(on_exit, exit_args, popen_args))
+    thread = threading.Thread(target=run_in_thread, args=(on_exit, exit_args, on_err, err_args, popen_args))
     thread.start()
     return thread
 
@@ -46,6 +50,9 @@ def watercolorization(sid):
                 socketio.emit('recv_img', {'image_data': image_data}, room=sid, namespace=name_space)
             return
 
+def close_socket(sid):
+    socketio.emit('error', "close", room=sid, namespace=name_space)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -59,8 +66,18 @@ def upload():
     print("path=",path)
     file.save(path)
     cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu --img_path=" + path + " --max_pixel_len=170 --phase_size=4 --SAVE_ROOT=./outputs/" + sid + "_" + img_name + "_"
-    popen_and_call(watercolorization, [sid] , [cmd])
-    return "200"
+    #popen_and_call(watercolorization, [sid] , close_socket, [sid], [cmd])
+    print(f"run shell on thread={threading.current_thread()}")
+    with open("./std/stdout_" + sid + ".txt","wb") as out, open("./std/stderr_" + sid + ".txt","wb") as err:
+        proc = subprocess.Popen(cmd,stdout=out,stderr=err,shell=True)
+        proc.wait()
+        returncode = proc.returncode
+        print(f"run shell over, returncode={returncode}")
+        if returncode == 0:
+            watercolorization(sid)
+        else:
+            close_socket(sid)
+        return "200"
 
 @socketio.on('connect', namespace=name_space)
 def connected_msg():
@@ -76,4 +93,5 @@ def disconnect_msg():
     print(f'client disconnected from {sid}')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=1234)
+    # app.run(host='0.0.0.0', port=1234)
+    socketio.run(app,host='0.0.0.0', port=1234)
