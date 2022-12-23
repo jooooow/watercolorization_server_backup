@@ -17,62 +17,56 @@ function b64(e){
     }
     return window.btoa(t)
 }
+
+function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+ }
+ function guid() {
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+ }
+
 $(document).ready(function() {
     $('#submit_form').submit(function(event){
         var fileName = $(this).find("input[name=img_file]").val();
-        console.log(fileName)
         if (fileName === '') 
         {
             alert('choose one file!');
             return;
         }
+        
+        var formData = new FormData($('#submit_form')[0]);
+        var uid = guid();
+        var dot_pos = fileName.lastIndexOf('.')
+        var slash_pos = fileName.lastIndexOf('\\')
+        var img_name = fileName.substring(slash_pos + 1, dot_pos) + "_" + uid + "_result.png"
 
-        namespace = '/dcenter';
-        url = location.protocol + '//' + document.domain + ':' + location.port + namespace
-        console.log("socket.connect(url);");
-        var socket = io.connect(url);
-        socket.on('onconnected', function (res) {
-            console.log(res)
-            console.log(res['sid'])
-            var formData = new FormData($('#submit_form')[0]);
-            formData.append("sid", res['sid'])
-            console.log(formData)
-            $.ajax({
-                async: true,
-                type: "POST",
-                url: "/upload",
-                data: formData,
-                dataType: "JSON",
-                mimeType: "multipart/form-data",
-                contentType: false,
-                cache: false,
-                processData: false,
-                success: function (data) {
-                    console.log(data)
+        formData.append('uid', uid);
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: "/upload",
+            data: formData,
+            dataType: "JSON",
+            mimeType: "multipart/form-data",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                if(data == 200){
+                    $('#output_img_div').empty();
+                    $('#output_img_div').append('<img id="output_img">');
+                    $('#output_img_div').attr("style","width:auto");
+                    $("#output_img").attr('src', "/static/outputs/" + img_name);
+                }else{
+                    $('#loading_img').attr('src', '/static/img/error.svg');
                 }
-            });
-            $('#output_img_div').empty();
-            $('#output_img_div').append('<img id="loading_img">');
-            $('#output_img_div').width($('#input_img_div').width());
-            $('#loading_img').attr('src', '/static/img/loading.gif');
+            }
         });
-        socket.on('recv_img', function (res) {
-            console.log("recv_img")
-            socket.disconnect();
-            console.log("socket.disconnect();");
-            img = res['image_data'];
-            $('#output_img_div').empty();
-            $('#output_img_div').append('<img id="output_img">');
-            $('#output_img_div').attr("style","width:auto");
-            $("#output_img").attr('src', "data:image/png;base64,"+b64(img));
-        });
-        socket.on('error', function (res) {
-            console.log("error")
-            console.log(res)
-            $('#loading_img').attr('src', '/static/img/error.svg');
-            socket.disconnect();
-            console.log("socket.disconnect();");
-        });
+        $('#output_img_div').empty();
+        $('#output_img_div').append('<img id="loading_img">');
+        $('#output_img_div').width($('#input_img_div').width());
+        $('#loading_img').attr('src', '/static/img/loading.gif');
+
         return false;
     })
 });

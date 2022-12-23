@@ -6,11 +6,12 @@ import os
 import re
 import glob
 import time
+import base64
 import random
 import threading
 import subprocess
 from flask import Flask, render_template
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 from flask_socketio import SocketIO, emit
 
 UPLOAD_FOLDER = './uploads'
@@ -59,25 +60,40 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    sid = request.form['sid']
+    uid = request.form['uid']
     file = request.files['img_file']
-    path = UPLOAD_FOLDER + "/" + sid + "_" + file.filename
     img_name = file.filename[:file.filename.find(".")]
+    img_type = file.filename[file.filename.find("."):]
+    path = UPLOAD_FOLDER + "/" + img_name + "_" + uid + img_type
     print("path=",path)
     file.save(path)
-    cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu --img_path=" + path + " --max_pixel_len=170 --phase_size=4 --SAVE_ROOT=./outputs/" + sid + "_" + img_name + "_"
-    #popen_and_call(watercolorization, [sid] , close_socket, [sid], [cmd])
+    cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu --img_path=" + path + " --max_pixel_len=170 --phase_size=4 --SAVE_ROOT=./static/outputs/" + img_name + "_" + uid + "_"
     print(f"run shell on thread={threading.current_thread()}")
-    with open("./std/stdout_" + sid + ".txt","wb") as out, open("./std/stderr_" + sid + ".txt","wb") as err:
+    with open("./std/stdout_" + uid + ".txt","wb") as out, open("./std/stderr_" + uid + ".txt","wb") as err:
         proc = subprocess.Popen(cmd,stdout=out,stderr=err,shell=True)
         proc.wait()
         returncode = proc.returncode
         print(f"run shell over, returncode={returncode}")
         if returncode == 0:
-            watercolorization(sid)
+            return "200"
         else:
-            close_socket(sid)
-        return "200"
+            return "503"
+    return "500"
+
+@app.route('/download', methods=['POST'])
+def download():
+    uid = request.json['uid']
+    file_name_list = os.listdir("outputs")
+    for file_name in file_name_list:
+        if uid in file_name:
+            file_path = "./outputs/" + file_name
+            print(f"find file : {file_path}")
+            '''with open(file_path, 'rb') as f:
+                image_data = base64.b64encode(f.read())
+                data = jsonify(name=file_path, data=image_data)
+                return data'''
+            return send_file(file_path)
+    return "404"
 
 @socketio.on('connect', namespace=name_space)
 def connected_msg():
