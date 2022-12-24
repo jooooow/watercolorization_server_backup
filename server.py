@@ -9,9 +9,10 @@ import time
 import base64
 import random
 import threading
+import operator
 import subprocess
 from flask import Flask, render_template
-from flask import request, jsonify, send_file
+from flask import request, jsonify, send_file, session
 from flask_socketio import SocketIO, emit
 from threading import Thread, Lock
 
@@ -20,6 +21,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = "this is the key for watercolorization server"
 
 socketio = SocketIO()
 socketio.init_app(app, cors_allowed_origins='*')
@@ -63,6 +65,23 @@ def close_socket(sid):
 def index():
     return render_template('index.html')
 
+@app.route('/back')
+def back():
+    dir = "./static/outputs"
+    file_name_list = os.listdir(dir)
+    file_name_list_sorted = []
+    for file_name in file_name_list:
+        t = datetime.datetime.fromtimestamp(os.path.getctime(dir + "/" + file_name))
+        file_name_list_sorted.append([file_name, t])
+    file_name_list_sorted = sorted(file_name_list_sorted, key=operator.itemgetter(1))
+    file_name_list_sorted.reverse()
+    html = "<body><table>"
+    for file_name, t in file_name_list_sorted:
+        #html += "<tr><a href='/static/outputs/" + file_name + "'><td>" + str(t) + "</td><td>" + file_name + "</td></a><tr>"
+        html += "<tr><td>" + str(t) + "</td><td><a href='/static/outputs/" + file_name + "'>" + file_name + "</a></td><tr>"
+    html += "</table></body>"
+    return html
+
 @app.route('/upload', methods=['POST'])
 def upload():
     uid = request.form['uid']
@@ -101,21 +120,6 @@ def upload():
     gpu_flags[gpu_id] = 0
     lock.release()
     return "500"
-
-@app.route('/download', methods=['POST'])
-def download():
-    uid = request.json['uid']
-    file_name_list = os.listdir("outputs")
-    for file_name in file_name_list:
-        if uid in file_name:
-            file_path = "./outputs/" + file_name
-            print(f"find file : {file_path}")
-            '''with open(file_path, 'rb') as f:
-                image_data = base64.b64encode(f.read())
-                data = jsonify(name=file_path, data=image_data)
-                return data'''
-            return send_file(file_path)
-    return "404"
 
 @socketio.on('connect', namespace=name_space)
 def connected_msg():
