@@ -51,10 +51,8 @@ img{
     margin: auto;
 }
 
-@media only screen 
-    and (device-width: 375px) 
-    and (device-height: 812px) 
-    and (-webkit-device-pixel-ratio: 3) { 
+@media  (-webkit-device-pixel-ratio: 3), 
+        (max-device-width:400px) { 
         
     body{
         width:100%;
@@ -88,6 +86,10 @@ img{
     input[type="file"]::-webkit-file-upload-button {
         height: 70px;
         font-size: 30px;
+    }
+
+    #output_img_div{
+        min-height: 100px;
     }
 }
 

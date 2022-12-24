@@ -62,6 +62,7 @@ $(document).ready(function() {
                     $('#output_img_div').empty();
                     $('#output_img_div').append('<img id="output_img">');
                     $('#output_img_div').attr("style","width:auto");
+                    $('#output_img_div').attr("style","height:auto");
                     $("#output_img").attr('src', "/static/outputs/" + img_name);
                 }else{
                     $('#loading_img').attr('src', '/static/img/error.svg');
