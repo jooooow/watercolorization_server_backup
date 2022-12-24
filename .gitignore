@@ -1,5 +1,4 @@
 /uploads/
 /static/outputs
 /std
-**/ttt/*
-!**/ttt/t.py
+/out.log
