@@ -34,8 +34,9 @@ $(document).ready(function() {
             return;
         }
 
+        
         $('#output_img_div').empty();
-        $('#output_img_div').append('<img id="loading_img">');
+        $('#output_img_div').append('<img id="loading_img" class="mx-auto d-block">');
         $('#output_img_div').width($('#input_img_div').width());
         $('#loading_img').attr('src', '/static/img/loading.gif');
         
