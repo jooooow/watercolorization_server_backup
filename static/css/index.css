@@ -1,11 +1,16 @@
 #title{
-    margin-top: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
     text-align: center;
-    font-size: 30px;
+    font-size: 40px;
+    font-family: "Microsoft YaHei","Arial";
+    font-weight: 700;
+    color:white;
+    background-color: rgb(0, 94, 60);
 }
 
 #logo{
-    height: 40px;
+    height: 30px;
 }
 
 #input_image{
@@ -14,8 +19,8 @@
 }
 
 #loading_img{
-    width:50px;
-    height: 50px;
+    width:70px;
+    height: 70px;
 }
 
 #output_img{
@@ -36,20 +41,20 @@
         font-size: 50px;
     }
     #logo{
-        height: 50px;
+        height: 40px;
     }
 }
 
 /* Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) {
     #title{
-        font-size: 60px;
+        font-size: 50px;
     }
 }
 
 /* Extra large devices (large desktops, 1200px and up)*/
 @media (min-width: 1200px) {
     #title{
-        font-size: 70px;
+        font-size: 50px;
     }
 }

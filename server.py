@@ -28,38 +28,7 @@ socketio.init_app(app, cors_allowed_origins='*')
 name_space = '/dcenter'
 
 lock = Lock()
-
 gpu_flags = [0] * 5
-
-def popen_and_call(on_exit, exit_args, on_err, err_args, popen_args):
-    def run_in_thread(on_exit, exit_args, on_err, err_args, popen_args):
-        proc = subprocess.Popen(*popen_args, shell=True)
-        proc.wait()
-        returncode = proc.returncode
-        if returncode == 0:
-            on_exit(*exit_args)
-        else:
-            on_err(*err_args)
-        return
-    thread = threading.Thread(target=run_in_thread, args=(on_exit, exit_args, on_err, err_args, popen_args))
-    thread.start()
-    return thread
-
-def watercolorization(sid):
-    print("ok", sid)
-    file_name_list = os.listdir("outputs")
-    for file_name in file_name_list:
-        if sid in file_name:
-            file_path = "./outputs/" + file_name
-            print(file_path)
-            with open(file_path, 'rb') as f:
-                image_data = f.read()
-                print(len(image_data))
-                socketio.emit('recv_img', {'image_data': image_data}, room=sid, namespace=name_space)
-            return
-
-def close_socket(sid):
-    socketio.emit('error', "close", room=sid, namespace=name_space)
 
 @app.route('/')
 def index():
@@ -77,20 +46,27 @@ def back():
     file_name_list_sorted.reverse()
     html = "<body><table>"
     for file_name, t in file_name_list_sorted:
-        #html += "<tr><a href='/static/outputs/" + file_name + "'><td>" + str(t) + "</td><td>" + file_name + "</td></a><tr>"
         html += "<tr><td>" + str(t) + "</td><td><a href='/static/outputs/" + file_name + "'>" + file_name + "</a></td><tr>"
     html += "</table></body>"
     return html
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    uid = request.form['uid']
-    file = request.files['img_file']
-    img_name = file.filename[:file.filename.find(".")]
-    img_type = file.filename[file.filename.find("."):]
-    path = UPLOAD_FOLDER + "/" + img_name + "_" + uid + img_type
-    print("path=",path)
-    file.save(path)
+    try:
+        uid = request.form['uid']
+        file = request.files['img_file']
+        scale = request.form['scale']
+        layers = request.form['layers']
+        timeout = request.form['timeout']
+        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, timeout={timeout}')
+        img_name = file.filename[:file.filename.find(".")]
+        img_type = file.filename[file.filename.find("."):]
+        path = UPLOAD_FOLDER + "/" + img_name + "_" + uid + img_type
+        print("path=",path)
+        file.save(path)
+    except Exception as e:
+        return {"status":"request error"}
+
     gpu_id = -1
     lock.acquire()
     for i, flag in enumerate(gpu_flags):
@@ -100,31 +76,42 @@ def upload():
             break
     lock.release()
     if gpu_id == -1:
-        print("busy", uid)
-        return "403"
-    cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu --img_path=" + path + " --max_pixel_len=170 --phase_size=4 --gpu_id=" + str(gpu_id) + " --SAVE_ROOT=./static/outputs/" + img_name + "_" + uid + "_"
-    print(f"run shell on thread={threading.current_thread()}")
-    with open("./std/stdout_" + uid + ".txt","wb") as out, open("./std/stderr_" + uid + ".txt","wb") as err:
-        proc = subprocess.Popen(cmd,stdout=out,stderr=err,shell=True)
-        proc.wait()
-        lock.acquire()
-        gpu_flags[gpu_id] = 0
-        lock.release()
-        returncode = proc.returncode
-        print(f"run shell over, returncode={returncode}")
-        if returncode == 0:
-            return "200"
-        else:
-            return "503"
+        return {"status":"busy"}
+        
+    socketio.emit("process_begin", room=uid, namespace=name_space)
+    
+    try:
+        cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu" \
+            + " --img_path=" + path \
+            + " --max_pixel_len=170 --phase_size=4 --gpu_id=" + str(gpu_id) \
+            + " --SAVE_ROOT=./static/outputs/" + img_name + "_" + uid + "_" \
+            + " --src_scale=" + scale \
+            + " --layer_size=" + layers
+        with open("./std/stderr_" + uid + ".txt","wb") as err:
+            proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=err, shell=True)
+            stdout, _ = proc.communicate()
+            total_process_time = re.findall(r'total time measured : (.+?) seconds', str(stdout))
+            total_process_time = "?" if len(total_process_time) == 0 else total_process_time[0]
+            print(f'total_process_time = {total_process_time}')
+            with open("./std/stdout_" + uid + ".txt","wb") as out:
+                out.write(stdout)
+    except Exception as e:
+        return {"status":"cmd error, " + str(e)}
+
     lock.acquire()
     gpu_flags[gpu_id] = 0
     lock.release()
-    return "500"
+
+    if proc.returncode == 0:
+        return {"status":"200", "total_process_time":total_process_time}
+    
+    return {"status":"exec_error(try to change the scale)"}
+
 
 @socketio.on('connect', namespace=name_space)
 def connected_msg():
     sid = request.sid
-    print(f'client connected to {sid}')
+    print(f'connected with {sid}')
     event_name = 'onconnected'
     data = {'sid': sid}
     socketio.emit(event_name, data, room=sid, namespace=name_space)
@@ -132,7 +119,7 @@ def connected_msg():
 @socketio.on('disconnect', namespace=name_space)
 def disconnect_msg():
     sid = request.sid
-    print(f'client disconnected from {sid}')
+    print(f'disconnected with {sid}')
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=1234)

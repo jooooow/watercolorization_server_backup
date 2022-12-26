@@ -11,24 +11,74 @@
 </head>
 <body>
     <div class="container-fluid h-100" id="cf">
-        <div class="row"><div class="col-12"><img id="logo" src="/static/img/hiroshima-university.png"></div></div>
+        <div class="row"><div class="col-12"><div class="text-center text-md-left"><img id="logo" src="/static/img/hiroshima-university.png"></div></div></div>
         <div class="row text-center">
-            <div class="col-12">
-                <p id="title">watercolorization!</p>
+            <div class="col-12" style="padding:0;">
+                <!-- <p id="title">watercolorization!</p> -->
+                <p id="title">水彩化ツール</p>
             </div>
         </div>
         <form id="submit_form">
-            <div class="row justify-content-center">
-                    <div class="col-md-4">
-                        <input type="file" id="img_file" name="img_file" accept="image/png, image/jpeg" onchange="display_image(this);">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="submit" name="submit">
-                    </div>
-                
+            <div class="row justify-content-center" style="margin-top: 6px; margin-bottom: 3px;">
+                <div class="col-md-3">
+                    <input type="file" id="img_file" name="img_file" accept="image/png, image/jpeg" onchange="display_image(this);" style="width:100%;">
+                </div>
+                <div class="col-md-1">
+                    <input type="submit" name="submit">
+                </div>
             </div>
         </form>
-        <div class="row h-100 align-items-center" style="margin-top:15px;margin-bottom: 15px;">
+        <div id="bar" class="row justify-content-center d-none d-md-block mx-auto" style="max-width: 800px;margin-top:7px;margin-bottom: 7px;">
+            <div class="col-10 text-center">
+                <div class="form-row">
+                    <label for="range_scale" class="col-1">scale</label>
+                    <span id="scale_value" class="col-1">1</span>
+                    <input class="form-control-range col-10" id="range_scale" type="range" min="0.5" max="1" value="1" step="0.01" oninput="document.getElementById('scale_value').innerText = document.getElementById('range_scale').value"/>
+                    
+                    <label for="range_layers" class="col-1">layers</label>
+                    <span id="layers_value" class="col-1">5</span>
+                    <input class="form-control-range col-10" id="range_layers" type="range" min="1" max="5" value="5" oninput="document.getElementById('layers_value').innerText = document.getElementById('range_layers').value"/>
+
+                    <label for="range_timeout" class="col-1">timeout</label>
+                    <span id="timeout_value" class="col-1">10</span>
+                    <input class="form-control-range col-10" id="range_timeout" type="range" min="5" max="20" value="10" oninput="document.getElementById('timeout_value').innerText = document.getElementById('range_timeout').value"/>
+                </div>
+            </div>
+        </div>
+        <div class="row d-md-none" style="margin-top:7px;margin-bottom: 7px;">
+            <div class="col-12">
+                <div class="form-row align-items-center">
+                    <label class="col-3" for="select_scale" style="margin:0;">scale</label>
+                    <select class="col-9" id="select_scale">
+                        <option>0.5</option>
+                        <option>0.6</option>
+                        <option>0.7</option>
+                        <option>0.8</option>
+                        <option>0.9</option>
+                        <option>1.0</option>
+                    </select>
+
+                    <label class="col-3" for="select_layers" style="margin:0;">layers</label>
+                    <select class="col-9" id="select_layers">
+                        <option>5</option>
+                        <option>4</option>
+                        <option>3</option>
+                        <option>2</option>
+                        <option>1</option>
+                    </select>
+
+                    <label class="col-3" for="select_timeout" style="margin:0;">timeout</label>
+                    <select class="col-9" id="select_timeout">
+                        <option>15</option>
+                        <option>20</option>
+                        <option>25</option>
+                        <option>30</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row"><div class="col-12 text-center" id="return_msg"></div></div>
+        <div class="row h-100 align-items-center" style="margin-top:7px;margin-bottom: 7px;">
             <div class="col-12 col-md-6">
                 <div class="user_img" id="input_img_div">
                     <img id="input_image">
