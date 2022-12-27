@@ -74,18 +74,10 @@ $(window).on("load", function() {
                 cache: false,
                 processData: false,
                 success: function (data) {
-                    //console.log(sid, "disconnected", data)
                     socket.disconnect();
                     if(data['status'] == 200){
                         var output_img_path = data['output_img_path'];
-                        
                         $('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
-                        /*$('#output_img_div').empty();
-                        $('#output_img_div').append('<img id="output_img">');
-                        $('#output_img_div').attr("style","width:auto");
-                        $('#output_img_div').attr("style","height:auto");
-                        $("#output_img").attr('src', output_img_path);*/
-
                         $.ajax({
                             async: true,
                             url: output_img_path,
@@ -103,8 +95,7 @@ $(window).on("load", function() {
                                 }
                                 $('#output_img_div').empty();
                                 $('#output_img_div').append('<img id="output_img">');
-                                $('#output_img_div').attr("style","width:auto");
-                                $('#output_img_div').attr("style","height:auto");
+                                $('#output_img_div').attr("style","width:auto;padding:0");
                                 $("#output_img").attr('src', "data:image/png;base64,"+btoa(binary));
                             } 
                         });
