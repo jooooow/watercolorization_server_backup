@@ -84,7 +84,7 @@ def upload():
     try:
         cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu" \
             + " --img_path=" + img_path \
-            + " --max_pixel_len=170 --phase_size=4 --gpu_id=" + str(gpu_id) \
+            + " --max_pixel_len=170 --default_phase_size=4 --gpu_id=" + str(gpu_id) \
             + " --SAVE_ROOT=" + out_path \
             + " --src_scale=" + scale \
             + " --layer_size=" + layers
