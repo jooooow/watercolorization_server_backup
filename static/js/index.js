@@ -95,7 +95,7 @@ $(window).on("load", function() {
                                 }
                                 $('#output_img_div').empty();
                                 $('#output_img_div').append('<img id="output_img">');
-                                $('#output_img_div').attr("style","width:auto;padding:0");
+                                $('#output_img_div').attr("style","width:auto;");
                                 $("#output_img").attr('src', "data:image/png;base64,"+btoa(binary));
                             } 
                         });

@@ -95,11 +95,18 @@ def upload():
         total_process_time = re.findall(r'total time measured : (.+?) seconds', str(stdout))
         total_process_time = "?" if len(total_process_time) == 0 else total_process_time[0]
         end = time.time()
+        img_size = re.findall(r'img_size\[(\d+) \* (\d+)\]', str(stdout))
+        img_size = ("?","?") if len(img_size) == 0 else str(img_size[0][0]),str(img_size[0][1])
         if proc.returncode == 0:
             with open("./std/stdout_" + uid + ".txt","wb") as out:
                 out.write(stdout)
             old_output_img_path = out_path + "result.png"
-            new_output_img_path = out_path + "scale" + str(scale) + "@layers" + str(layers) + "@usetime" + str(total_process_time) + "@result.png"
+            new_output_img_path = out_path \
+                                + "size" + img_size[0] + "x" + img_size[1] + "@" \
+                                + "scale" + str(scale) + "@" \
+                                + "layers" + str(layers) + "@" \
+                                + "usetime" + str(total_process_time) + "@" \
+                                + "result.png"
             os.rename(old_output_img_path , new_output_img_path)
         
             lock.acquire()
