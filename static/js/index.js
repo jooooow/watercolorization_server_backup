@@ -79,8 +79,8 @@ $(window).on("load", function() {
                     if(data['status'] == 200){
                         var output_img_path = data['output_img_path'];
                         
-                        /*$('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
-                        $('#output_img_div').empty();
+                        $('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
+                        /*$('#output_img_div').empty();
                         $('#output_img_div').append('<img id="output_img">');
                         $('#output_img_div').attr("style","width:auto");
                         $('#output_img_div').attr("style","height:auto");
