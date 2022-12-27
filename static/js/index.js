@@ -8,6 +8,17 @@ function display_image(input) {
     }
 }
 
+function b64(e){
+    var t="";
+    var n=new Uint8Array(e);
+    var r=n.byteLength;
+    for(var i=0;i<r;i++)
+    {
+        t+=String.fromCharCode(n[i])
+    }
+    return window.btoa(t)
+}
+
 $(window).on("load", function() {
     $('#submit_form').submit(function(event){
         var fileName = $(this).find("input[name=img_file]").val();
@@ -66,14 +77,38 @@ $(window).on("load", function() {
                     //console.log(sid, "disconnected", data)
                     socket.disconnect();
                     if(data['status'] == 200){
-                        //console.log('output_img_path=',data['output_img_path']);
                         var output_img_path = data['output_img_path'];
-                        $('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
+                        
+                        /*$('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
                         $('#output_img_div').empty();
                         $('#output_img_div').append('<img id="output_img">');
                         $('#output_img_div').attr("style","width:auto");
                         $('#output_img_div').attr("style","height:auto");
-                        $("#output_img").attr('src', output_img_path);
+                        $("#output_img").attr('src', output_img_path);*/
+
+                        $.ajax({
+                            async: true,
+                            url: output_img_path,
+                            type: 'get',
+                            beforeSend: function (xhr) {
+                                xhr.overrideMimeType('text/plain; charset=x-user-defined');
+                            },
+                            success: function(result, textStatus, jqXHR) {
+                                var binary = "";
+                                var responseText = jqXHR.responseText;
+                                var responseTextLen = responseText.length;
+
+                                for ( i = 0; i < responseTextLen; i++ ) {
+                                    binary += String.fromCharCode(responseText.charCodeAt(i) & 255)
+                                }
+                                $('#output_img_div').empty();
+                                $('#output_img_div').append('<img id="output_img">');
+                                $('#output_img_div').attr("style","width:auto");
+                                $('#output_img_div').attr("style","height:auto");
+                                $("#output_img").attr('src', "data:image/png;base64,"+btoa(binary));
+                            } 
+                        });
+                        $('#loading_img').attr('src', '/static/img/downloading.gif');
                     }else{
                         $('#return_msg').html('ERROR : ' + data['status']);
                         $('#loading_img').attr('src', '/static/img/error.svg');
@@ -84,7 +119,7 @@ $(window).on("load", function() {
         
         socket.on('process_begin', function (res) {
             //console.log("process_begin");
-            $('#loading_img').attr('src', '/static/img/loading.gif');
+            $('#loading_img').attr('src', '/static/img/processing.gif');
         });
 
         return false;

@@ -11,7 +11,7 @@ import random
 import threading
 import operator
 import subprocess
-from flask import Flask, render_template
+from flask import Flask, render_template,make_response
 from flask import request, jsonify, send_file, session
 from flask_socketio import SocketIO, emit
 from threading import Thread, Lock
@@ -118,6 +118,10 @@ def upload():
 
     return {"status":"exec_error(try to change the scale)"}
 
+@app.route('/download', methods=['GET'])
+def download():
+    #with open("./static/img/hiroshima-university.png", 'r') as img:
+    return send_file("./static/img/hiroshima-university.png", mimetype='image/png')
 
 @socketio.on('connect', namespace=name_space)
 def connected_msg():
@@ -131,6 +135,7 @@ def connected_msg():
 def disconnect_msg():
     sid = request.sid
     print(f'disconnected with {sid}')
+
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=1234)
