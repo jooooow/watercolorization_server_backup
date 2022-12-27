@@ -7,25 +7,8 @@ function display_image(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-function b64(e){
-    var t="";
-    var n=new Uint8Array(e);
-    var r=n.byteLength;
-    for(var i=0;i<r;i++)
-    {
-        t+=String.fromCharCode(n[i])
-    }
-    return window.btoa(t)
-}
 
-function S4() {
-    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-}
-function guid() {
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-}
-
-$(document).ready(function() {
+$(window).on("load", function() {
     $('#submit_form').submit(function(event){
         var fileName = $(this).find("input[name=img_file]").val();
         if (fileName === '') 
@@ -40,7 +23,7 @@ $(document).ready(function() {
 
         socket.on('onconnected', function (res) {
             var sid = socket.id;
-            console.log(sid, "connected ", res)
+            //console.log(sid, "connected ", res)
 
             $('#return_msg').html('');
             $('#output_img_div').empty();
@@ -80,15 +63,17 @@ $(document).ready(function() {
                 cache: false,
                 processData: false,
                 success: function (data) {
-                    console.log(sid, "disconnected", data)
+                    //console.log(sid, "disconnected", data)
                     socket.disconnect();
                     if(data['status'] == 200){
+                        //console.log('output_img_path=',data['output_img_path']);
+                        var output_img_path = data['output_img_path'];
                         $('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
                         $('#output_img_div').empty();
                         $('#output_img_div').append('<img id="output_img">');
                         $('#output_img_div').attr("style","width:auto");
                         $('#output_img_div').attr("style","height:auto");
-                        $("#output_img").attr('src', "/static/outputs/" + img_name);
+                        $("#output_img").attr('src', output_img_path);
                     }else{
                         $('#return_msg').html('ERROR : ' + data['status']);
                         $('#loading_img').attr('src', '/static/img/error.svg');
@@ -98,7 +83,7 @@ $(document).ready(function() {
         });
         
         socket.on('process_begin', function (res) {
-            console.log("process_begin");
+            //console.log("process_begin");
             $('#loading_img').attr('src', '/static/img/loading.gif');
         });
 

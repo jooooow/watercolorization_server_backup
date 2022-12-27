@@ -61,9 +61,10 @@ def upload():
         print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, timeout={timeout}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
-        path = UPLOAD_FOLDER + "/" + img_name + "_" + uid + img_type
-        print("path=",path)
-        file.save(path)
+        img_path = UPLOAD_FOLDER + "/" + img_name + "@" + uid + img_type
+        out_path = "./static/outputs/" + img_name + "@" + uid + "@"
+        print("img_path=",img_path)
+        file.save(img_path)
     except Exception as e:
         return {"status":"request error"}
 
@@ -79,32 +80,42 @@ def upload():
         return {"status":"busy"}
         
     socketio.emit("process_begin", room=uid, namespace=name_space)
-    
+
     try:
         cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu" \
-            + " --img_path=" + path \
+            + " --img_path=" + img_path \
             + " --max_pixel_len=170 --phase_size=4 --gpu_id=" + str(gpu_id) \
-            + " --SAVE_ROOT=./static/outputs/" + img_name + "_" + uid + "_" \
+            + " --SAVE_ROOT=" + out_path \
             + " --src_scale=" + scale \
             + " --layer_size=" + layers
-        with open("./std/stderr_" + uid + ".txt","wb") as err:
-            proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=err, shell=True)
-            stdout, _ = proc.communicate()
-            total_process_time = re.findall(r'total time measured : (.+?) seconds', str(stdout))
-            total_process_time = "?" if len(total_process_time) == 0 else total_process_time[0]
-            print(f'total_process_time = {total_process_time}')
+
+        start = time.time()
+        proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
+        stdout, _ = proc.communicate()
+        total_process_time = re.findall(r'total time measured : (.+?) seconds', str(stdout))
+        total_process_time = "?" if len(total_process_time) == 0 else total_process_time[0]
+        end = time.time()
+        if proc.returncode == 0:
             with open("./std/stdout_" + uid + ".txt","wb") as out:
                 out.write(stdout)
+            old_output_img_path = out_path + "result.png"
+            new_output_img_path = out_path + "scale" + str(scale) + "@layers" + str(layers) + "@usetime" + str(total_process_time) + "@result.png"
+            os.rename(old_output_img_path , new_output_img_path)
+        
+            lock.acquire()
+            gpu_flags[gpu_id] = 0
+            lock.release()
+            return {"status":"200", "total_process_time":total_process_time, "output_img_path":new_output_img_path}
     except Exception as e:
+        lock.acquire()
+        gpu_flags[gpu_id] = 0
+        lock.release()
         return {"status":"cmd error, " + str(e)}
 
     lock.acquire()
     gpu_flags[gpu_id] = 0
     lock.release()
 
-    if proc.returncode == 0:
-        return {"status":"200", "total_process_time":total_process_time}
-    
     return {"status":"exec_error(try to change the scale)"}
 
 
