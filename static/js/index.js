@@ -77,7 +77,9 @@ $(window).on("load", function() {
                     socket.disconnect();
                     if(data['status'] == 200){
                         var output_img_path = data['output_img_path'];
-                        $('#return_msg').html('finished in : ' + data['total_process_time'] + ' seconds');
+                        var total_process_time = data['total_process_time'];
+                        var compute_time = data['compute_time'];
+                        $('#return_msg').html('finished in : ' + total_process_time + "s (" + compute_time + 's)');
                         $.ajax({
                             async: true,
                             url: output_img_path,

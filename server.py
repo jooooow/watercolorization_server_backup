@@ -94,6 +94,8 @@ def upload():
         stdout, _ = proc.communicate()
         total_process_time = re.findall(r'total time measured : (.+?) seconds', str(stdout))
         total_process_time = "?" if len(total_process_time) == 0 else total_process_time[0]
+        compute_time = re.findall(r'compute time measured : (.+?) seconds', str(stdout))
+        compute_time = "?" if len(compute_time) == 0 else compute_time[0]
         end = time.time()
         img_size = re.findall(r'img_size\[(\d+) \* (\d+)\]', str(stdout))
         img_size = ("?","?") if len(img_size) == 0 else str(img_size[0][0]),str(img_size[0][1])
@@ -105,14 +107,15 @@ def upload():
                                 + "size" + img_size[0] + "x" + img_size[1] + "@" \
                                 + "scale" + str(scale) + "@" \
                                 + "layers" + str(layers) + "@" \
-                                + "usetime" + str(total_process_time) + "@" \
+                                + "totaltime" + str(total_process_time) + "@" \
+                                + "computetime" + str(compute_time) + "@" \
                                 + "result.png"
             os.rename(old_output_img_path , new_output_img_path)
         
             lock.acquire()
             gpu_flags[gpu_id] = 0
             lock.release()
-            return {"status":"200", "total_process_time":total_process_time, "output_img_path":new_output_img_path}
+            return {"status":"200", "total_process_time":total_process_time, "compute_time":compute_time, "output_img_path":new_output_img_path}
     except Exception as e:
         lock.acquire()
         gpu_flags[gpu_id] = 0
