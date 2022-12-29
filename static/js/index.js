@@ -21,7 +21,7 @@ function b64(e){
 
 $(window).on("load", function() {
     $("#advanced_setting").hide();
-    $("#advanced_setting_btn").click(function(){
+    $("#showhidden").click(function(){
         if($("#advanced_setting").is(":visible")){
             $("#advanced_setting").hide();
             $("#showhidden").css('rotate', '-90deg');
@@ -64,16 +64,19 @@ $(window).on("load", function() {
                 var scale = $("#range_scale").val();
                 var layers = $("#range_layers").val();
                 var ETF = $("#range_ETF").val();
+                var phase = $("#range_phase").val();
             }else{
                 var scale = $("#select_scale option:selected" ).text();
                 var layers = $("#select_layers option:selected" ).text();
                 var ETF = $("#select_ETF option:selected" ).text();
+                var phase = $("#select_phase option:selected" ).text();
             }
 
             formData.append('uid', uid);
             formData.append('scale', scale);
             formData.append('layers', layers);
             formData.append('ETF', ETF);
+            formData.append('phase', phase);
 
             $.ajax({
                 async: true,

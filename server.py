@@ -58,7 +58,8 @@ def upload():
         scale = request.form['scale']
         layers = request.form['layers']
         ETF = request.form['ETF']
-        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}')
+        default_phase_size = request.form['phase']
+        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}, phase={default_phase_size}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
         img_path = UPLOAD_FOLDER + "/" + img_name + "@" + uid + img_type
@@ -77,14 +78,16 @@ def upload():
             break
     lock.release()
     if gpu_id == -1:
-        return {"status":"busy"}
+        return {"status":"server busy"}
         
     socketio.emit("process_begin", room=uid, namespace=name_space)
 
     try:
-        cmd = "/home/jiamian/watercolorization_v4_newgraph/gpu/build/watercolorization4_gpu" \
+        cmd = "/home/jiamian/watercolorization_v4_newgraph_ver2/gpu/build/watercolorization4_gpu" \
             + " --img_path=" + img_path \
-            + " --max_pixel_len=170 --default_phase_size=4 --gpu_id=" + str(gpu_id) \
+            + " --max_pixel_len=170" \
+            + " --default_phase_size=" + default_phase_size \
+            + " --gpu_id=" + str(gpu_id) \
             + " --SAVE_ROOT=" + out_path \
             + " --src_scale=" + scale \
             + " --layer_size=" + layers \
@@ -100,15 +103,16 @@ def upload():
         end = time.time()
         img_size = re.findall(r'img_size\[(\d+) \* (\d+)\]', str(stdout))
         img_size = ("?","?") if len(img_size) == 0 else str(img_size[0][0]),str(img_size[0][1])
+        with open("./std/stdout_" + uid + ".txt","wb") as out:
+            out.write(stdout)
         if proc.returncode == 0:
-            with open("./std/stdout_" + uid + ".txt","wb") as out:
-                out.write(stdout)
             old_output_img_path = out_path + "result.png"
             new_output_img_path = out_path \
                                 + "size" + img_size[0] + "x" + img_size[1] + "@" \
                                 + "scale" + str(scale) + "@" \
                                 + "layers" + str(layers) + "@" \
                                 + "ETF" + str(ETF) + "@" \
+                                + "phase" + default_phase_size + "@" \
                                 + "totaltime" + str(total_process_time) + "@" \
                                 + "computetime" + str(compute_time) + "@" \
                                 + "result.png"

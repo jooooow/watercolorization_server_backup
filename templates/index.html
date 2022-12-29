@@ -40,8 +40,8 @@
                     <input class="form-control-range col-10" id="range_layers" type="range" min="1" max="5" value="5" oninput="document.getElementById('layers_value').innerText = document.getElementById('range_layers').value"/>
                 </div>
                 <div class="row">
-                    <div class="col-12" id="advanced_setting_btn">
-                        <img src="/static/img/showhidden2.svg" style="width: 24px;rotate: -90deg;" id='showhidden'/>
+                    <div class="col-12">
+                        <img src="/static/img/showhidden2.svg" style="width: 16px;rotate: -90deg;margin-bottom: 2px;" id='showhidden'/>
                         advanced
                     </div>
                 </div>
@@ -49,6 +49,10 @@
                     <label for="range_ETF" class="col-1">ETF</label>
                     <span id="ETF_value" class="col-1">5</span>
                     <input class="form-control-range col-10" id="range_ETF" type="range" min="0" max="10" value="5" oninput="document.getElementById('ETF_value').innerText = document.getElementById('range_ETF').value"/>
+                    
+                    <label for="range_phase" class="col-1">phase</label>
+                    <span id="phase_value" class="col-1">2</span>
+                    <input class="form-control-range col-10" id="range_phase" type="range" min="1" max="8" value="2" oninput="document.getElementById('phase_value').innerText = document.getElementById('range_phase').value"/>
                 </div>
             </div>
         </div>
@@ -79,6 +83,18 @@
                         <option>0</option>
                         <option selected="selected">5</option>
                         <option>10</option>
+                    </select>
+
+                    <label class="col-2" for="select_phase" style="margin:0;">phase</label>
+                    <select class="col-10" id="select_phase">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option selected="selected">4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
                     </select>
                 </div>
             </div>
