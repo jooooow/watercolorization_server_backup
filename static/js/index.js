@@ -43,7 +43,7 @@ $(window).on("load", function() {
         namespace = '/dcenter';
         url = location.protocol + '//' + document.domain + ':' + location.port + namespace
         var socket = io.connect(url);
-
+        
         socket.on('onconnected', function (res) {
             var sid = socket.id;
             //console.log(sid, "connected ", res)
@@ -56,9 +56,6 @@ $(window).on("load", function() {
             
             var formData = new FormData($('#submit_form')[0]);
             var uid = sid;
-            var dot_pos = fileName.lastIndexOf('.')
-            var slash_pos = fileName.lastIndexOf('\\')
-            var img_name = fileName.substring(slash_pos + 1, dot_pos) + "_" + uid + "_result.png"
 
             if($("#bar").is(":visible") == true){
                 var scale = $("#range_scale").val();
@@ -75,7 +72,7 @@ $(window).on("load", function() {
                 var MPL = $("#select_MPL option:selected" ).text();
                 var simscale = $("#select_simscale option:selected" ).text();
             }
-            console.log(MPL);
+   
             formData.append('uid', uid);
             formData.append('scale', scale);
             formData.append('layers', layers);
