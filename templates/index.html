@@ -29,8 +29,8 @@
             </div>
         </form>
         <div id="bar" class="row justify-content-center d-none d-md-block mx-auto" style="max-width: 800px;margin-top:7px;margin-bottom: 7px;">
-            <div class="col-10 text-center">
-                <div class="form-row align-items-center">
+            <div class="col-10">
+                <div class="form-row align-items-center text-center" id="basic_setting">
                     <label for="range_scale" class="col-1">scale</label>
                     <span id="scale_value" class="col-1">1</span>
                     <input class="form-control-range col-10" id="range_scale" type="range" min="0.5" max="1" value="1" step="0.01" oninput="document.getElementById('scale_value').innerText = document.getElementById('range_scale').value"/>
@@ -38,18 +38,25 @@
                     <label for="range_layers" class="col-1">layers</label>
                     <span id="layers_value" class="col-1">5</span>
                     <input class="form-control-range col-10" id="range_layers" type="range" min="1" max="5" value="5" oninput="document.getElementById('layers_value').innerText = document.getElementById('range_layers').value"/>
-
-                    <label for="range_timeout" class="col-1">timeout</label>
-                    <span id="timeout_value" class="col-1">10</span>
-                    <input class="form-control-range col-10" id="range_timeout" type="range" min="5" max="20" value="10" oninput="document.getElementById('timeout_value').innerText = document.getElementById('range_timeout').value"/>
+                </div>
+                <div class="row">
+                    <div class="col-12" id="advanced_setting_btn">
+                        <img src="/static/img/showhidden2.svg" style="width: 24px;rotate: -90deg;" id='showhidden'/>
+                        advanced
+                    </div>
+                </div>
+                <div class="form-row align-items-center text-center" id="advanced_setting" style="display: none;">
+                    <label for="range_ETF" class="col-1">ETF</label>
+                    <span id="ETF_value" class="col-1">5</span>
+                    <input class="form-control-range col-10" id="range_ETF" type="range" min="0" max="10" value="5" oninput="document.getElementById('ETF_value').innerText = document.getElementById('range_ETF').value"/>
                 </div>
             </div>
         </div>
         <div class="row d-md-none" style="margin-top:7px;margin-bottom: 7px;">
             <div class="col-12">
                 <div class="form-row align-items-center">
-                    <label class="col-3" for="select_scale" style="margin:0;">scale</label>
-                    <select class="col-9" id="select_scale">
+                    <label class="col-2" for="select_scale" style="margin:0;">scale</label>
+                    <select class="col-10" id="select_scale">
                         <option>1.0</option>
                         <option>0.9</option>
                         <option>0.8</option>
@@ -58,8 +65,8 @@
                         <option>0.5</option>
                     </select>
 
-                    <label class="col-3" for="select_layers" style="margin:0;">layers</label>
-                    <select class="col-9" id="select_layers">
+                    <label class="col-2" for="select_layers" style="margin:0;">layers</label>
+                    <select class="col-10" id="select_layers">
                         <option>5</option>
                         <option>4</option>
                         <option>3</option>
@@ -67,12 +74,11 @@
                         <option>1</option>
                     </select>
 
-                    <label class="col-3" for="select_timeout" style="margin:0;">timeout</label>
-                    <select class="col-9" id="select_timeout">
-                        <option>15</option>
-                        <option>20</option>
-                        <option>25</option>
-                        <option>30</option>
+                    <label class="col-2" for="select_ETF" style="margin:0;">ETF</label>
+                    <select class="col-10" id="select_ETF">
+                        <option>0</option>
+                        <option selected="selected">5</option>
+                        <option>10</option>
                     </select>
                 </div>
             </div>

@@ -20,6 +20,18 @@ function b64(e){
 }
 
 $(window).on("load", function() {
+    $("#advanced_setting").hide();
+    $("#advanced_setting_btn").click(function(){
+        if($("#advanced_setting").is(":visible")){
+            $("#advanced_setting").hide();
+            $("#showhidden").css('rotate', '-90deg');
+        }else{
+            $("#advanced_setting").show();
+            $("#showhidden").css('rotate', '0deg');
+        }
+    });
+
+
     $('#submit_form').submit(function(event){
         var fileName = $(this).find("input[name=img_file]").val();
         if (fileName === '') 
@@ -51,17 +63,17 @@ $(window).on("load", function() {
             if($("#bar").is(":visible") == true){
                 var scale = $("#range_scale").val();
                 var layers = $("#range_layers").val();
-                var timeout = $("#range_timeout").val();
+                var ETF = $("#range_ETF").val();
             }else{
                 var scale = $("#select_scale option:selected" ).text();
                 var layers = $("#select_layers option:selected" ).text();
-                var timeout = $("#select_timeout option:selected" ).text();
+                var ETF = $("#select_ETF option:selected" ).text();
             }
 
             formData.append('uid', uid);
             formData.append('scale', scale);
             formData.append('layers', layers);
-            formData.append('timeout', timeout);
+            formData.append('ETF', ETF);
 
             $.ajax({
                 async: true,

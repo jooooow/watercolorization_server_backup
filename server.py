@@ -57,8 +57,8 @@ def upload():
         file = request.files['img_file']
         scale = request.form['scale']
         layers = request.form['layers']
-        timeout = request.form['timeout']
-        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, timeout={timeout}')
+        ETF = request.form['ETF']
+        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
         img_path = UPLOAD_FOLDER + "/" + img_name + "@" + uid + img_type
@@ -87,7 +87,8 @@ def upload():
             + " --max_pixel_len=170 --default_phase_size=4 --gpu_id=" + str(gpu_id) \
             + " --SAVE_ROOT=" + out_path \
             + " --src_scale=" + scale \
-            + " --layer_size=" + layers
+            + " --layer_size=" + layers \
+            + " --ETF=" + ETF 
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -107,6 +108,7 @@ def upload():
                                 + "size" + img_size[0] + "x" + img_size[1] + "@" \
                                 + "scale" + str(scale) + "@" \
                                 + "layers" + str(layers) + "@" \
+                                + "ETF" + str(ETF) + "@" \
                                 + "totaltime" + str(total_process_time) + "@" \
                                 + "computetime" + str(compute_time) + "@" \
                                 + "result.png"
