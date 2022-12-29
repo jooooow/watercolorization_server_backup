@@ -59,7 +59,9 @@ def upload():
         layers = request.form['layers']
         ETF = request.form['ETF']
         default_phase_size = request.form['phase']
-        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}, phase={default_phase_size}')
+        max_pixel_len = request.form['max_pixel_len']
+        simscale = request.form['simscale']
+        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}, phase={default_phase_size}, max_pixel_len={max_pixel_len}, simscale={simscale}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
         img_path = UPLOAD_FOLDER + "/" + img_name + "@" + uid + img_type
@@ -67,7 +69,7 @@ def upload():
         print("img_path=",img_path)
         file.save(img_path)
     except Exception as e:
-        return {"status":"request error"}
+        return {"status":"bad request"}
 
     gpu_id = -1
     lock.acquire()
@@ -85,13 +87,14 @@ def upload():
     try:
         cmd = "/home/jiamian/watercolorization_v4_newgraph_ver2/gpu/build/watercolorization4_gpu" \
             + " --img_path=" + img_path \
-            + " --max_pixel_len=170" \
+            + " --max_pixel_len=" + max_pixel_len \
             + " --default_phase_size=" + default_phase_size \
             + " --gpu_id=" + str(gpu_id) \
             + " --SAVE_ROOT=" + out_path \
             + " --src_scale=" + scale \
             + " --layer_size=" + layers \
-            + " --ETF=" + ETF 
+            + " --ETF=" + ETF \
+            + " --simscale=" + simscale
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -113,6 +116,8 @@ def upload():
                                 + "layers" + str(layers) + "@" \
                                 + "ETF" + str(ETF) + "@" \
                                 + "phase" + default_phase_size + "@" \
+                                + "MPL" + max_pixel_len + "@" \
+                                + "simscale" + simscale + "@" \
                                 + "totaltime" + str(total_process_time) + "@" \
                                 + "computetime" + str(compute_time) + "@" \
                                 + "result.png"

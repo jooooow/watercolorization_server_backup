@@ -65,18 +65,24 @@ $(window).on("load", function() {
                 var layers = $("#range_layers").val();
                 var ETF = $("#range_ETF").val();
                 var phase = $("#range_phase").val();
+                var MPL = $("#range_MPL").val();
+                var simscale = $("#range_simscale").val();
             }else{
                 var scale = $("#select_scale option:selected" ).text();
                 var layers = $("#select_layers option:selected" ).text();
                 var ETF = $("#select_ETF option:selected" ).text();
                 var phase = $("#select_phase option:selected" ).text();
+                var MPL = $("#select_MPL option:selected" ).text();
+                var simscale = $("#select_simscale option:selected" ).text();
             }
-
+            console.log(MPL);
             formData.append('uid', uid);
             formData.append('scale', scale);
             formData.append('layers', layers);
             formData.append('ETF', ETF);
             formData.append('phase', phase);
+            formData.append('max_pixel_len', MPL);
+            formData.append('simscale', simscale);
 
             $.ajax({
                 async: true,

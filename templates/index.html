@@ -53,6 +53,15 @@
                     <label for="range_phase" class="col-1">phase</label>
                     <span id="phase_value" class="col-1">2</span>
                     <input class="form-control-range col-10" id="range_phase" type="range" min="1" max="8" value="2" oninput="document.getElementById('phase_value').innerText = document.getElementById('range_phase').value"/>
+
+                    <label for="range_MPL" class="col-1">MPL</label>
+                    <span id="MPL_value" class="col-1">170</span>
+                    <input class="form-control-range col-10" id="range_MPL" type="range" min="100" max="250" value="170" step="10" oninput="document.getElementById('MPL_value').innerText = document.getElementById('range_MPL').value"/>
+
+                    <label for="range_simscale" class="col-1">simscale</label>
+                    <span id="simscale_value" class="col-1">1.0</span>
+                    <input class="form-control-range col-10" id="range_simscale" type="range" min="0.5" max="2" value="1" step="0.1" oninput="document.getElementById('simscale_value').innerText = document.getElementById('range_simscale').value"/>
+
                 </div>
             </div>
         </div>
@@ -95,6 +104,28 @@
                         <option>6</option>
                         <option>7</option>
                         <option>8</option>
+                    </select>
+
+                    <label class="col-2" for="select_MPL" style="margin:0;">MPL</label>
+                    <select class="col-10" id="select_MPL">
+                        <option>130</option>
+                        <option>140</option>
+                        <option>160</option>
+                        <option selected="selected">170</option>
+                        <option>180</option>
+                        <option>190</option>
+                        <option>200</option>
+                    </select>
+
+                    <label class="col-2" for="select_simscale" style="margin:0;">simscale</label>
+                    <select class="col-10" id="select_simscale">
+                        <option>0.5</option>
+                        <option>0.75</option>
+                        <option selected="selected">1.0</option>
+                        <option>1.25</option>
+                        <option>1.5</option>
+                        <option>1.75</option>
+                        <option>2.0</option>
                     </select>
                 </div>
             </div>
