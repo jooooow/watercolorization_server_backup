@@ -31,6 +31,10 @@ $(window).on("load", function() {
         }
     });
 
+    $("#logo").dblclick(function(){
+        window.open('/back'); 
+    });
+
 
     $('#submit_form').submit(function(event){
         var fileName = $(this).find("input[name=img_file]").val();
