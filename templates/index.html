@@ -19,16 +19,16 @@
         </div>
         <form id="submit_form">
             <div class="row justify-content-center" style="margin-top: 6px; margin-bottom: 3px;">
-                <div class="col-md-3">
+                <div class="col-9 col-md-3">
                     <input type="file" id="img_file" name="img_file" accept="image/png, image/jpeg" onchange="display_image(this);" style="width:100%;">
                 </div>
-                <div class="col-md-1">
+                <div class="col-3 col-md-1">
                     <input type="submit" name="submit">
                 </div>
             </div>
         </form>
         <div id="bar" class="row justify-content-center d-none d-md-block mx-auto" style="max-width: 800px;margin-top:7px;margin-bottom: 7px;">
-            <div class="col-10">
+            <div class="col-11 mx-auto">
                 <div class="form-row align-items-center text-center" id="basic_setting">
                     <label for="range_scale" class="col-1">scale</label>
                     <span id="scale_value" class="col-1">1</span>
@@ -37,6 +37,16 @@
                     <label for="range_layers" class="col-1">layers</label>
                     <span id="layers_value" class="col-1">5</span>
                     <input class="form-control-range col-10" id="range_layers" type="range" min="1" max="5" value="5" oninput="document.getElementById('layers_value').innerText = document.getElementById('range_layers').value"/>
+                    
+                    <label for="range_exposure" class="col-1">exposure</label>
+                    <span id="exposure_value" class="col-1">1.2</span>
+                    <input class="form-control-range col-10" id="range_exposure" type="range" min="0.1" max="2.0" value="1.2" step="0.1" oninput="document.getElementById('exposure_value').innerText = document.getElementById('range_exposure').value"/>
+                
+                    <label for="range_saturation" class="col-1">saturation</label>
+                    <span id="saturation_value" class="col-1">2</span>
+                    <input class="form-control-range col-10" id="range_saturation" type="range" min="0.5" max="3" value="2" step="0.1" oninput="document.getElementById('saturation_value').innerText = document.getElementById('range_saturation').value"/>
+                
+                
                 </div>
                 <div class="row">
                     <div class="col-12">
@@ -66,9 +76,15 @@
         </div>
         <div class="row d-md-none" style="margin-top:7px;margin-bottom: 7px;">
             <div class="col-12">
-                <div class="form-row align-items-center">
-                    <label class="col-2" for="select_scale" style="margin:0;">scale</label>
-                    <select class="col-10" id="select_scale">
+                <div class="row d-md-none">
+                    <div class="col-12">
+                        <img src="/static/img/showhidden2.svg" style="width: 24px;rotate: -90deg;margin-bottom: 2px;" id='showhidden2'/>
+                        settings
+                    </div>
+                </div>
+                <div class="form-row align-items-center" id="settings2" style="display: none;">
+                    <label class="col-3" for="select_scale" style="margin:0;">scale</label>
+                    <select class="col-9" id="select_scale">
                         <option>1.0</option>
                         <option>0.9</option>
                         <option>0.8</option>
@@ -77,8 +93,8 @@
                         <option>0.5</option>
                     </select>
 
-                    <label class="col-2" for="select_layers" style="margin:0;">layers</label>
-                    <select class="col-10" id="select_layers">
+                    <label class="col-3" for="select_layers" style="margin:0;">layers</label>
+                    <select class="col-9" id="select_layers">
                         <option>5</option>
                         <option>4</option>
                         <option>3</option>
@@ -86,15 +102,36 @@
                         <option>1</option>
                     </select>
 
-                    <label class="col-2" for="select_ETF" style="margin:0;">ETF</label>
-                    <select class="col-10" id="select_ETF">
+                    <label class="col-3" for="select_exposure" style="margin:0;">exposure</label>
+                    <select class="col-9" id="select_exposure">
+                        <option>2</option>
+                        <option>1.8</option>
+                        <option>1.6</option>
+                        <option>1.4</option>
+                        <option selected="selected">1.2</option>
+                        <option>1.0</option>
+                        <option>0.8</option>
+                        <option>0.6</option>
+                    </select>
+
+                    <label class="col-3" for="select_saturation" style="margin:0;">saturation</label>
+                    <select class="col-9" id="select_saturation">
+                        <option>3</option>
+                        <option>2.5</option>
+                        <option selected="selected">2</option>
+                        <option>1.5</option>
+                        <option>1</option>
+                    </select>
+
+                    <label class="col-3" for="select_ETF" style="margin:0;">ETF</label>
+                    <select class="col-9" id="select_ETF">
                         <option>0</option>
                         <option selected="selected">5</option>
                         <option>10</option>
                     </select>
 
-                    <label class="col-2" for="select_phase" style="margin:0;">phase</label>
-                    <select class="col-10" id="select_phase">
+                    <label class="col-3" for="select_phase" style="margin:0;">phase</label>
+                    <select class="col-9" id="select_phase">
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
@@ -105,8 +142,8 @@
                         <option>8</option>
                     </select>
 
-                    <label class="col-2" for="select_MPL" style="margin:0;">MPL</label>
-                    <select class="col-10" id="select_MPL">
+                    <label class="col-3" for="select_MPL" style="margin:0;">MPL</label>
+                    <select class="col-9" id="select_MPL">
                         <option>130</option>
                         <option>140</option>
                         <option>160</option>
@@ -116,8 +153,8 @@
                         <option>200</option>
                     </select>
 
-                    <label class="col-2" for="select_simscale" style="margin:0;">simscale</label>
-                    <select class="col-10" id="select_simscale">
+                    <label class="col-3" for="select_simscale" style="margin:0;">simscale</label>
+                    <select class="col-9" id="select_simscale">
                         <option>0.5</option>
                         <option>0.75</option>
                         <option selected="selected">1.0</option>

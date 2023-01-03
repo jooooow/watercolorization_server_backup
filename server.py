@@ -44,11 +44,12 @@ def back():
         file_name_list_sorted.append([file_name, t])
     file_name_list_sorted = sorted(file_name_list_sorted, key=operator.itemgetter(1))
     file_name_list_sorted.reverse()
-    html = "<body><table>"
+    file_name_list_sorted = [[file_name, str(t)] for file_name, t in file_name_list_sorted]
+    '''html = "<body><table>"
     for file_name, t in file_name_list_sorted:
         html += "<tr><td>" + str(t) + "</td><td><a href='/static/outputs/" + file_name + "'>" + file_name + "</a></td><tr>"
-    html += "</table></body>"
-    return html
+    html += "</table></body>"'''
+    return render_template("back.html", file_list = file_name_list_sorted)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -57,6 +58,8 @@ def upload():
         file = request.files['img_file']
         scale = request.form['scale']
         layers = request.form['layers']
+        exposure = request.form['exposure']
+        saturation = request.form['saturation']
         ETF = request.form['ETF']
         default_phase_size = request.form['phase']
         max_pixel_len = request.form['max_pixel_len']
@@ -94,7 +97,9 @@ def upload():
             + " --src_scale=" + scale \
             + " --layer_size=" + layers \
             + " --ETF=" + ETF \
-            + " --simscale=" + simscale
+            + " --simscale=" + simscale \
+            + " --exposure=" + exposure \
+            + " --saturation=" + saturation
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -114,6 +119,8 @@ def upload():
                                 + "size" + img_size[0] + "x" + img_size[1] + "@" \
                                 + "scale" + str(scale) + "@" \
                                 + "layers" + str(layers) + "@" \
+                                + "e" + str(exposure) \
+                                + "s" + str(saturation) + "@" \
                                 + "ETF" + str(ETF) + "@" \
                                 + "phase" + default_phase_size + "@" \
                                 + "MPL" + max_pixel_len + "@" \
@@ -159,5 +166,5 @@ def disconnect_msg():
 
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=1234)
-    socketio.run(app,host='0.0.0.0', port=1234)
+    app.run(host='0.0.0.0', port=1234)
+    # socketio.run(app,host='0.0.0.0', port=1234)

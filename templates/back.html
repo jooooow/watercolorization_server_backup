@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<title>back</title>
+</head>
+<body>
+    <div class="container-fluid h-100" id="cf">
+        
+    </div>
+</body>
+<script>
+    let file_list = {{file_list | tojson}};
+    file_list.forEach(file => {
+        var file_name = file[0];
+        var file_date = file[1];
+        $("#cf").append("<div class='row'><div class='col-5 col-md-2'><p>" + file_date + "</p></div><div class='col-7 col-md-10'><a href='/static/outputs/" + file_name + "'><p>" + file_name +  "</p></a></div></div>")
+    });
+</script>
+<style>
+p{
+    margin:0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+</style>
+</html>

@@ -31,6 +31,16 @@ $(window).on("load", function() {
         }
     });
 
+    $("#showhidden2").click(function(){
+        if($("#settings2").is(":visible")){
+            $("#settings2").hide();
+            $("#showhidden2").css('rotate', '-90deg');
+        }else{
+            $("#settings2").show();
+            $("#showhidden2").css('rotate', '0deg');
+        }
+    });
+
     $("#logo").dblclick(function(){
         window.open('/back'); 
     });
@@ -64,6 +74,8 @@ $(window).on("load", function() {
             if($("#bar").is(":visible") == true){
                 var scale = $("#range_scale").val();
                 var layers = $("#range_layers").val();
+                var exposure = $("#range_exposure").val();
+                var saturation = $("#range_saturation").val();
                 var ETF = $("#range_ETF").val();
                 var phase = $("#range_phase").val();
                 var MPL = $("#range_MPL").val();
@@ -71,6 +83,8 @@ $(window).on("load", function() {
             }else{
                 var scale = $("#select_scale option:selected" ).text();
                 var layers = $("#select_layers option:selected" ).text();
+                var exposure = $("#select_exposure option:selected").val();
+                var saturation = $("#select_saturation option:selected").val();
                 var ETF = $("#select_ETF option:selected" ).text();
                 var phase = $("#select_phase option:selected" ).text();
                 var MPL = $("#select_MPL option:selected" ).text();
@@ -80,6 +94,8 @@ $(window).on("load", function() {
             formData.append('uid', uid);
             formData.append('scale', scale);
             formData.append('layers', layers);
+            formData.append('exposure', exposure);
+            formData.append('saturation', saturation);
             formData.append('ETF', ETF);
             formData.append('phase', phase);
             formData.append('max_pixel_len', MPL);
