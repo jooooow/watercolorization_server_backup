@@ -49,7 +49,7 @@ $(window).on("load", function() {
     });
 
     $("#select_GPU").val(gpu);
-    $("#gpu_label").html(gpu);
+    $("#gpu_span").html(gpu);
 
     $("#select_GPU").change(function() {
         var GPU = $("#select_GPU option:selected" ).text();
