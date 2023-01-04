@@ -50,10 +50,17 @@ $(window).on("load", function() {
     });
 
     $("#select_GPU").val(GPU);
+    $("#select_GPU2").val(GPU);
     $("#gpu_span").html(GPU);
 
     $("#select_GPU").change(function() {
         $("#gpu_span").html($("#select_GPU option:selected" ).text());
+        $("#select_GPU2").val($("#select_GPU option:selected" ).text());
+    });
+
+    $("#select_GPU2").change(function() {
+        $("#gpu_span").html($("#select_GPU2 option:selected" ).text());
+        $("#select_GPU").val($("#select_GPU2 option:selected" ).text());
     });
 
     $('#submit_form').submit(function(event){
