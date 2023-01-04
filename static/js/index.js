@@ -19,6 +19,8 @@ function b64(e){
     return window.btoa(t)
 }
 
+var gpu = "A6000";
+
 $(window).on("load", function() {
     $("#advanced_setting").hide();
     $("#showhidden").click(function(){
@@ -40,11 +42,24 @@ $(window).on("load", function() {
             $("#showhidden2").css('rotate', '0deg');
         }
     });
+    
 
     $("#logo").dblclick(function(){
         window.open('/back'); 
     });
 
+    $("#select_GPU").val(gpu);
+    $("#gpu_label").html(gpu);
+
+    $("#select_GPU").change(function() {
+        var GPU = $("#select_GPU option:selected" ).text();
+        if(GPU == 'A100'){
+            window.location.href = "http://10.30.82.150:1234";
+        }
+        else if(GPU == 'A6000'){
+            window.location.href = "http://10.30.82.141:1234";
+        }
+    });
 
     $('#submit_form').submit(function(event){
         var fileName = $(this).find("input[name=img_file]").val();
