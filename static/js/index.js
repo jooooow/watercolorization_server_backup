@@ -19,7 +19,8 @@ function b64(e){
     return window.btoa(t)
 }
 
-var gpu = "A6000";
+var GPU = "A6000";
+var tar_url = "";
 
 $(window).on("load", function() {
     $("#advanced_setting").hide();
@@ -48,17 +49,11 @@ $(window).on("load", function() {
         window.open('/back'); 
     });
 
-    $("#select_GPU").val(gpu);
-    $("#gpu_span").html(gpu);
+    $("#select_GPU").val(GPU);
+    $("#gpu_span").html(GPU);
 
     $("#select_GPU").change(function() {
-        var GPU = $("#select_GPU option:selected" ).text();
-        if(GPU == 'A100'){
-            window.location.href = "http://10.30.82.150:1234";
-        }
-        else if(GPU == 'A6000'){
-            window.location.href = "http://10.30.82.141:1234";
-        }
+        $("#gpu_span").html($("#select_GPU option:selected" ).text());
     });
 
     $('#submit_form').submit(function(event){
@@ -69,13 +64,20 @@ $(window).on("load", function() {
             return;
         }
 
-        namespace = '/dcenter';
-        url = location.protocol + '//' + document.domain + ':' + location.port + namespace
+        GPU = $("#select_GPU option:selected").text();
+        if(GPU == 'A100'){
+            tar_url = "http://10.30.82.150:1234";
+        }
+        else if(GPU == 'A6000'){
+            tar_url = "http://10.30.82.141:1234";
+        }
+
+        url = tar_url + '/dcenter';
         var socket = io.connect(url);
+        console.log(tar_url);
         
         socket.on('onconnected', function (res) {
             var sid = socket.id;
-            //console.log(sid, "connected ", res)
 
             $('#return_msg').html('');
             $('#output_img_div').empty();
@@ -119,7 +121,7 @@ $(window).on("load", function() {
             $.ajax({
                 async: true,
                 type: "POST",
-                url: "/upload",
+                url: tar_url + "/upload",
                 data: formData,
                 dataType: "JSON",
                 mimeType: "multipart/form-data",
@@ -130,6 +132,7 @@ $(window).on("load", function() {
                     socket.disconnect();
                     if(data['status'] == 200){
                         var output_img_path = data['output_img_path'];
+                        var output_img_path = tar_url + output_img_path.substring(1)
                         var total_process_time = data['total_process_time'];
                         var compute_time = data['compute_time'];
                         $('#return_msg').html('finished in : ' + total_process_time + "s (" + compute_time + 's)');

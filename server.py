@@ -11,6 +11,7 @@ import random
 import threading
 import operator
 import subprocess
+from flask_cors import CORS
 from flask import Flask, render_template,make_response
 from flask import request, jsonify, send_file, session
 from flask_socketio import SocketIO, emit
@@ -22,6 +23,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = "this is the key for watercolorization server"
+CORS(app)
 
 socketio = SocketIO()
 socketio.init_app(app, cors_allowed_origins='*')
