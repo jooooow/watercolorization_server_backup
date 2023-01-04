@@ -13,10 +13,12 @@
 </body>
 <script>
     let file_list = {{file_list | tojson}};
+    var cnt = file_list.length - 1;
     file_list.forEach(file => {
         var file_name = file[0];
         var file_date = file[1];
-        $("#cf").append("<div class='row'><div class='col-5 col-md-2'><p>" + file_date + "</p></div><div class='col-7 col-md-10'><a href='/static/outputs/" + file_name + "'><p>" + file_name +  "</p></a></div></div>")
+        $("#cf").append("<div class='row'><div class='col-1 col-md-1 text-center'>" + cnt + "</div><div class='col-5 col-md-2 text-center'><p>" + file_date + "</p></div><div class='col-6 col-md-9'><a href='/static/outputs/" + file_name + "'><p>" + file_name +  "</p></a></div></div>")
+        cnt--;
     });
 </script>
 <style>

@@ -36,8 +36,11 @@ def index():
 
 @app.route('/back')
 def back():
+    file_name_tag = request.args['file'] if 'file' in request.args else None
+    time_tag = request.args['time'] if 'time' in request.args else None
     dir = "./static/outputs"
     file_name_list = os.listdir(dir)
+    file_name_list = list(filter(lambda file_name: file_name_tag is None or file_name_tag in file_name, file_name_list))
     file_name_list_sorted = []
     for file_name in file_name_list:
         t = datetime.datetime.fromtimestamp(os.path.getctime(dir + "/" + file_name))
@@ -45,6 +48,7 @@ def back():
     file_name_list_sorted = sorted(file_name_list_sorted, key=operator.itemgetter(1))
     file_name_list_sorted.reverse()
     file_name_list_sorted = [[file_name, str(t)] for file_name, t in file_name_list_sorted]
+    file_name_list_sorted = list(filter(lambda x : time_tag is None or time_tag in x[1], file_name_list_sorted))
     '''html = "<body><table>"
     for file_name, t in file_name_list_sorted:
         html += "<tr><td>" + str(t) + "</td><td><a href='/static/outputs/" + file_name + "'>" + file_name + "</a></td><tr>"
