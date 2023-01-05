@@ -102,6 +102,7 @@ $(window).on("load", function() {
                 var saturation = $("#range_saturation").val();
                 var ETF = $("#range_ETF").val();
                 var phase = $("#range_phase").val();
+                var PDT = $("#range_PDT").val();
                 var MPL = $("#range_MPL").val();
                 var simscale = $("#range_simscale").val();
             }else{
@@ -111,6 +112,7 @@ $(window).on("load", function() {
                 var saturation = $("#select_saturation option:selected").val();
                 var ETF = $("#select_ETF option:selected" ).text();
                 var phase = $("#select_phase option:selected" ).text();
+                var PDT = $("#select_PDT option:selected" ).text();
                 var MPL = $("#select_MPL option:selected" ).text();
                 var simscale = $("#select_simscale option:selected" ).text();
             }
@@ -122,6 +124,7 @@ $(window).on("load", function() {
             formData.append('saturation', saturation);
             formData.append('ETF', ETF);
             formData.append('phase', phase);
+            formData.append('phase_divide_threshold', PDT);
             formData.append('max_pixel_len', MPL);
             formData.append('simscale', simscale);
 

@@ -72,6 +72,10 @@
                     <span id="phase_value" class="col-1">2</span>
                     <input class="form-control-range col-10" id="range_phase" type="range" min="1" max="8" value="2" oninput="document.getElementById('phase_value').innerText = document.getElementById('range_phase').value"/>
 
+                    <label for="range_PDT" class="col-1">PDT</label>
+                    <span id="PDT_value" class="col-1">40000</span>
+                    <input class="form-control-range col-10" id="range_PDT" type="range" min="10000" max="100000" value="40000" step="10000" oninput="document.getElementById('PDT_value').innerText = document.getElementById('range_PDT').value"/>
+
                     <label for="range_MPL" class="col-1">MPL</label>
                     <span id="MPL_value" class="col-1">170</span>
                     <input class="form-control-range col-10" id="range_MPL" type="range" min="100" max="250" value="170" step="10" oninput="document.getElementById('MPL_value').innerText = document.getElementById('range_MPL').value"/>
@@ -155,6 +159,20 @@
                         <option>6</option>
                         <option>7</option>
                         <option>8</option>
+                    </select>
+
+                    <label class="col-3" for="select_PDT" style="margin:0;">PDT</label>
+                    <select class="col-9" id="select_PDT">
+                        <option>10000</option>
+                        <option>20000</option>
+                        <option>30000</option>
+                        <option selected="selected">40000</option>
+                        <option>50000</option>
+                        <option>60000</option>
+                        <option>70000</option>
+                        <option>80000</option>
+                        <option>90000</option>
+                        <option>100000</option>
                     </select>
 
                     <label class="col-3" for="select_MPL" style="margin:0;">MPL</label>

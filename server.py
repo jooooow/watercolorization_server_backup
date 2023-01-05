@@ -70,6 +70,7 @@ def upload():
         default_phase_size = request.form['phase']
         max_pixel_len = request.form['max_pixel_len']
         simscale = request.form['simscale']
+        phase_divide_threshold = request.form['phase_divide_threshold']
         print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}, phase={default_phase_size}, max_pixel_len={max_pixel_len}, simscale={simscale}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
@@ -105,7 +106,8 @@ def upload():
             + " --ETF=" + ETF \
             + " --simscale=" + simscale \
             + " --exposure=" + exposure \
-            + " --saturation=" + saturation
+            + " --saturation=" + saturation \
+            + " --phase_divide_threshold=" + phase_divide_threshold
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -129,10 +131,11 @@ def upload():
                                 + "s" + str(saturation) + "@" \
                                 + "ETF" + str(ETF) + "@" \
                                 + "phase" + default_phase_size + "@" \
+                                + "PDT" + phase_divide_threshold + "@" \
                                 + "MPL" + max_pixel_len + "@" \
                                 + "simscale" + simscale + "@" \
-                                + "totaltime" + str(total_process_time) + "@" \
-                                + "computetime" + str(compute_time) + "@" \
+                                + "ttime" + str(total_process_time) + "@" \
+                                + "ctime" + str(compute_time) + "@" \
                                 + "result.png"
             os.rename(old_output_img_path , new_output_img_path)
         
