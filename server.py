@@ -51,10 +51,6 @@ def back():
     file_name_list_sorted.reverse()
     file_name_list_sorted = [[file_name, str(t)] for file_name, t in file_name_list_sorted]
     file_name_list_sorted = list(filter(lambda x : time_tag is None or time_tag in x[1], file_name_list_sorted))
-    '''html = "<body><table>"
-    for file_name, t in file_name_list_sorted:
-        html += "<tr><td>" + str(t) + "</td><td><a href='/static/outputs/" + file_name + "'>" + file_name + "</a></td><tr>"
-    html += "</table></body>"'''
     return render_template("back.html", file_list = file_name_list_sorted)
 
 @app.route('/upload', methods=['POST'])
@@ -66,6 +62,7 @@ def upload():
         layers = request.form['layers']
         exposure = request.form['exposure']
         saturation = request.form['saturation']
+        fineness = request.form['fineness']
         ETF = request.form['ETF']
         default_phase_size = request.form['phase']
         max_pixel_len = request.form['max_pixel_len']
@@ -107,7 +104,8 @@ def upload():
             + " --simscale=" + simscale \
             + " --exposure=" + exposure \
             + " --saturation=" + saturation \
-            + " --phase_divide_threshold=" + phase_divide_threshold
+            + " --phase_divide_threshold=" + phase_divide_threshold \
+            + " --r_min=" + fineness
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -129,6 +127,7 @@ def upload():
                                 + "layers" + str(layers) + "@" \
                                 + "e" + str(exposure) \
                                 + "s" + str(saturation) + "@" \
+                                + "fineness" + str(fineness) + "@" \
                                 + "ETF" + str(ETF) + "@" \
                                 + "phase" + default_phase_size + "@" \
                                 + "PDT" + phase_divide_threshold + "@" \

@@ -105,6 +105,7 @@ $(window).on("load", function() {
                 var PDT = $("#range_PDT").val();
                 var MPL = $("#range_MPL").val();
                 var simscale = $("#range_simscale").val();
+                var fineness = $("#range_fineness").val();
             }else{
                 var scale = $("#select_scale option:selected" ).text();
                 var layers = $("#select_layers option:selected" ).text();
@@ -115,6 +116,7 @@ $(window).on("load", function() {
                 var PDT = $("#select_PDT option:selected" ).text();
                 var MPL = $("#select_MPL option:selected" ).text();
                 var simscale = $("#select_simscale option:selected" ).text();
+                var fineness = $("#select_fineness option:selected" ).text();
             }
    
             formData.append('uid', uid);
@@ -122,6 +124,7 @@ $(window).on("load", function() {
             formData.append('layers', layers);
             formData.append('exposure', exposure);
             formData.append('saturation', saturation);
+            formData.append('fineness', fineness);
             formData.append('ETF', ETF);
             formData.append('phase', phase);
             formData.append('phase_divide_threshold', PDT);
