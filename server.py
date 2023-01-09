@@ -11,6 +11,7 @@ import random
 import threading
 import operator
 import subprocess
+from flask_cors import CORS
 from flask import Flask, render_template,make_response
 from flask import request, jsonify, send_file, session
 from flask_socketio import SocketIO, emit
@@ -22,6 +23,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = "this is the key for watercolorization server"
+CORS(app)
 
 socketio = SocketIO()
 socketio.init_app(app, cors_allowed_origins='*')
@@ -36,19 +38,20 @@ def index():
 
 @app.route('/back')
 def back():
+    file_name_tag = request.args['file'] if 'file' in request.args else None
+    time_tag = request.args['time'] if 'time' in request.args else None
     dir = "./static/outputs"
     file_name_list = os.listdir(dir)
+    file_name_list = list(filter(lambda file_name: file_name_tag is None or file_name_tag in file_name, file_name_list))
     file_name_list_sorted = []
     for file_name in file_name_list:
         t = datetime.datetime.fromtimestamp(os.path.getctime(dir + "/" + file_name))
         file_name_list_sorted.append([file_name, t])
     file_name_list_sorted = sorted(file_name_list_sorted, key=operator.itemgetter(1))
     file_name_list_sorted.reverse()
-    html = "<body><table>"
-    for file_name, t in file_name_list_sorted:
-        html += "<tr><td>" + str(t) + "</td><td><a href='/static/outputs/" + file_name + "'>" + file_name + "</a></td><tr>"
-    html += "</table></body>"
-    return html
+    file_name_list_sorted = [[file_name, str(t)] for file_name, t in file_name_list_sorted]
+    file_name_list_sorted = list(filter(lambda x : time_tag is None or time_tag in x[1], file_name_list_sorted))
+    return render_template("back.html", file_list = file_name_list_sorted)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -57,10 +60,14 @@ def upload():
         file = request.files['img_file']
         scale = request.form['scale']
         layers = request.form['layers']
+        exposure = request.form['exposure']
+        saturation = request.form['saturation']
+        fineness = request.form['fineness']
         ETF = request.form['ETF']
         default_phase_size = request.form['phase']
         max_pixel_len = request.form['max_pixel_len']
         simscale = request.form['simscale']
+        phase_divide_threshold = request.form['phase_divide_threshold']
         print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}, phase={default_phase_size}, max_pixel_len={max_pixel_len}, simscale={simscale}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
@@ -94,7 +101,11 @@ def upload():
             + " --src_scale=" + scale \
             + " --layer_size=" + layers \
             + " --ETF=" + ETF \
-            + " --simscale=" + simscale
+            + " --simscale=" + simscale \
+            + " --exposure=" + exposure \
+            + " --saturation=" + saturation \
+            + " --phase_divide_threshold=" + phase_divide_threshold \
+            + " --r_min=" + fineness
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -114,12 +125,16 @@ def upload():
                                 + "size" + img_size[0] + "x" + img_size[1] + "@" \
                                 + "scale" + str(scale) + "@" \
                                 + "layers" + str(layers) + "@" \
+                                + "e" + str(exposure) \
+                                + "s" + str(saturation) + "@" \
+                                + "fineness" + str(fineness) + "@" \
                                 + "ETF" + str(ETF) + "@" \
                                 + "phase" + default_phase_size + "@" \
+                                + "PDT" + phase_divide_threshold + "@" \
                                 + "MPL" + max_pixel_len + "@" \
                                 + "simscale" + simscale + "@" \
-                                + "totaltime" + str(total_process_time) + "@" \
-                                + "computetime" + str(compute_time) + "@" \
+                                + "ttime" + str(total_process_time) + "@" \
+                                + "ctime" + str(compute_time) + "@" \
                                 + "result.png"
             os.rename(old_output_img_path , new_output_img_path)
         
@@ -159,5 +174,5 @@ def disconnect_msg():
 
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=1234)
-    socketio.run(app,host='0.0.0.0', port=1234)
+    app.run(host='0.0.0.0', port=1234)
+    # socketio.run(app,host='0.0.0.0', port=1234)
