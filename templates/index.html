@@ -43,10 +43,11 @@
                     <span id="scale_value" class="col-1">1</span>
                     <input class="form-control-range col-10" id="range_scale" type="range" min="0.5" max="1" value="1" step="0.01" oninput="document.getElementById('scale_value').innerText = document.getElementById('range_scale').value"/>
                     
-                    <label for="range_layers" class="col-1">layers</label>
+                    <!--<label for="range_layers" class="col-1">layers</label>
                     <span id="layers_value" class="col-1">5</span>
                     <input class="form-control-range col-10" id="range_layers" type="range" min="1" max="5" value="5" oninput="document.getElementById('layers_value').innerText = document.getElementById('range_layers').value"/>
-                    
+                    -->
+
                     <label for="range_exposure" class="col-1">exposure</label>
                     <span id="exposure_value" class="col-1">1.2</span>
                     <input class="form-control-range col-10" id="range_exposure" type="range" min="0.1" max="2.0" value="1.2" step="0.1" oninput="document.getElementById('exposure_value').innerText = document.getElementById('range_exposure').value"/>
@@ -56,8 +57,8 @@
                     <input class="form-control-range col-10" id="range_saturation" type="range" min="0.5" max="3" value="2" step="0.1" oninput="document.getElementById('saturation_value').innerText = document.getElementById('range_saturation').value"/>
                 
                     <label for="range_fineness" class="col-1">fineness</label>
-                    <span id="fineness_value" class="col-1">4</span>
-                    <input class="form-control-range col-10" id="range_fineness" type="range" min="2" max="10" value="4" step="1" oninput="document.getElementById('fineness_value').innerText = document.getElementById('range_fineness').value"/>
+                    <span id="fineness_value" class="col-1">0.9</span>
+                    <input class="form-control-range col-10" id="range_fineness" type="range" min="0.1" max="1.0" value="0.9" step="0.01" oninput="document.getElementById('fineness_value').innerText = document.getElementById('range_fineness').value"/>
                 
                 </div>
                 <div class="row">
@@ -115,14 +116,14 @@
                         <option>0.5</option>
                     </select>
 
-                    <label class="col-3" for="select_layers" style="margin:0;">layers</label>
+                    <!--<label class="col-3" for="select_layers" style="margin:0;">layers</label>
                     <select class="col-9" id="select_layers">
                         <option>5</option>
                         <option>4</option>
                         <option>3</option>
                         <option>2</option>
                         <option>1</option>
-                    </select>
+                    </select>-->
 
                     <label class="col-3" for="select_exposure" style="margin:0;">exposure</label>
                     <select class="col-9" id="select_exposure">
@@ -147,16 +148,16 @@
 
                     <label class="col-3" for="select_fineness" style="margin:0;">fineness</label>
                     <select class="col-9" id="select_fineness">
-                        <option>10</option>
-                        <option>9</option>
-                        <option>8</option>
-                        <option>7</option>
-                        <option>6</option>
-                        <option>5</option>
-                        <option selected="selected">4</option>
-                        <option>3</option>
-                        <option>2</option>
-                        <option>1</option>
+                        <option>0.1</option>
+                        <option>0.2</option>
+                        <option>0.3</option>
+                        <option>0.4</option>
+                        <option>0.5</option>
+                        <option>0.6</option>
+                        <option>0.7</option>
+                        <option>0.8</option>
+                        <option selected="selected">0.9</option>
+                        <option>1.0</option>
                     </select>
 
                     <label class="col-3" for="select_ETF" style="margin:0;">ETF</label>

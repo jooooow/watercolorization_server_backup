@@ -59,7 +59,7 @@ def upload():
         uid = request.form['uid']
         file = request.files['img_file']
         scale = request.form['scale']
-        layers = request.form['layers']
+        #layers = request.form['layers']
         exposure = request.form['exposure']
         saturation = request.form['saturation']
         fineness = request.form['fineness']
@@ -68,7 +68,7 @@ def upload():
         max_pixel_len = request.form['max_pixel_len']
         simscale = request.form['simscale']
         phase_divide_threshold = request.form['phase_divide_threshold']
-        print(f'uid={uid}, file={file}, scale={scale}, layers={layers}, ETF={ETF}, phase={default_phase_size}, max_pixel_len={max_pixel_len}, simscale={simscale}')
+        print(f'uid={uid}, file={file}, scale={scale}, ETF={ETF}, phase={default_phase_size}, max_pixel_len={max_pixel_len}, simscale={simscale}')
         img_name = file.filename[:file.filename.find(".")]
         img_type = file.filename[file.filename.find("."):]
         img_path = UPLOAD_FOLDER + "/" + img_name + "@" + uid + img_type
@@ -99,13 +99,12 @@ def upload():
             + " --gpu_id=" + str(gpu_id) \
             + " --SAVE_ROOT=" + out_path \
             + " --src_scale=" + scale \
-            + " --layer_size=" + layers \
             + " --ETF=" + ETF \
             + " --simscale=" + simscale \
             + " --exposure=" + exposure \
             + " --saturation=" + saturation \
             + " --phase_divide_threshold=" + phase_divide_threshold \
-            + " --r_min=" + fineness
+            + " --fineness=" + fineness
 
         start = time.time()
         proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL, shell=True)
@@ -124,7 +123,6 @@ def upload():
             new_output_img_path = out_path \
                                 + "size" + img_size[0] + "x" + img_size[1] + "@" \
                                 + "scale" + str(scale) + "@" \
-                                + "layers" + str(layers) + "@" \
                                 + "e" + str(exposure) \
                                 + "s" + str(saturation) + "@" \
                                 + "fineness" + str(fineness) + "@" \

@@ -97,7 +97,7 @@ $(window).on("load", function() {
 
             if($("#bar").is(":visible") == true){
                 var scale = $("#range_scale").val();
-                var layers = $("#range_layers").val();
+                //var layers = $("#range_layers").val();
                 var exposure = $("#range_exposure").val();
                 var saturation = $("#range_saturation").val();
                 var ETF = $("#range_ETF").val();
@@ -108,7 +108,7 @@ $(window).on("load", function() {
                 var fineness = $("#range_fineness").val();
             }else{
                 var scale = $("#select_scale option:selected" ).text();
-                var layers = $("#select_layers option:selected" ).text();
+                //var layers = $("#select_layers option:selected" ).text();
                 var exposure = $("#select_exposure option:selected").val();
                 var saturation = $("#select_saturation option:selected").val();
                 var ETF = $("#select_ETF option:selected" ).text();
@@ -121,7 +121,7 @@ $(window).on("load", function() {
    
             formData.append('uid', uid);
             formData.append('scale', scale);
-            formData.append('layers', layers);
+            //formData.append('layers', layers);
             formData.append('exposure', exposure);
             formData.append('saturation', saturation);
             formData.append('fineness', fineness);
